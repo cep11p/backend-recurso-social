@@ -83,7 +83,7 @@ class LugarForm extends Model
             $response = \Yii::$app->lugar->buscarLocalidad($params);   
         }
         
-        if(isset($response['success']) && $response['success']==true){
+        if(isset($response['resultado']) && count($response['resultado'])>0){
 
             $resultado = $response['resultado'];
         }
