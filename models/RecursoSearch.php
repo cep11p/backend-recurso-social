@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use app\components\VinculoInteroperableHelp;
-use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Recurso;
@@ -707,18 +705,35 @@ class RecursoSearch extends Recurso
     public function listaBeneficiarios($params)
     {
         $query = $this->crearSqlListaBeneficiario($params);
+        
+        #Seteamos paginacion
         $pagesize = (isset($params['pagesize']) && is_numeric($params['pagesize']))?$params['pagesize']:20;
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => [
-                'pageSize' => $pagesize,
-                'page' => (isset($params['page']) && is_numeric($params['page']))?$params['page']:0
-            ],
-        ]);
+        $total_count = $query->count();
+        $pagina = $params['page'];
+        if (!$pagina) {
+            $inicio = 0;
+            $pagina=1;
+        }else{
+            $inicio = ($pagina) * $pagesize;
+        }
 
+        #Antes de setear la paginacion vamos a sumar los montos acreditados y montos sin acreditar
+        $rows = $query->createCommand()->queryAll();
+        $monto_acreditado = 0;
+        $monto_baja = 0;
+        $monto_sin_acreditar = 0;
+        foreach ($rows as $value) {
+            #sumamos los montos
+            $monto_acreditado = $monto_acreditado + $value['monto_acreditado'];
+            $monto_baja = $monto_baja + $value['monto_baja'];
+            $monto_sin_acreditar = $monto_sin_acreditar + $value['monto_sin_acreditar'];
+        }
         
+        #Configuramos paginacion
+        $query->limit($pagesize);
+        $query->offset($inicio);
         
-        
+        #Estructuramos el array
         $rows = $query->createCommand()->queryAll();
         $coleccion_recurso = array();
         $monto_acreditado = 0;
@@ -734,11 +749,6 @@ class RecursoSearch extends Recurso
             $value['recurso_acreditado_cantidad'] = intval($value['recurso_acreditado_cantidad']);
             $value['recurso_sin_acreditar_cantidad'] = $value['recurso_cantidad']-$value['recurso_baja_cantidad']-$value['recurso_acreditado_cantidad'];
             $coleccion_recurso[] = $value;
-
-            #sumamos los montos
-            $monto_acreditado = $monto_acreditado + $value['monto_acreditado'];
-            $monto_baja = $monto_baja + $value['monto_baja'];
-            $monto_sin_acreditar = $monto_sin_acreditar + $value['monto_sin_acreditar'];
         }
 
         if(count($coleccion_recurso)>0){
@@ -746,24 +756,21 @@ class RecursoSearch extends Recurso
             $coleccion_recurso = $this->vincularPersona($coleccion_recurso, $coleccion_persona);
         } 
         
-        $paginas = ceil($dataProvider->totalCount/$pagesize);
+        $paginas = ceil($total_count/$pagesize);
                          
-        // $monto_acreditado = $this->sumarMontoAcreditado($lista_ids);
-        // $monto_baja = $this->sumarMontoBaja($lista_ids);
-        // $monto_sin_acreditar = $this->sumarMontoSinAcreditar($lista_ids)-$monto_baja;
         $recurso_acreditado_cantidad = $this->contarRecursoAcreditado($params);
         $recurso_baja_cantidad = $this->contarRecursoBaja($params);
 
         $data['pagesize']=$pagesize;            
         $data['pages']=$paginas;            
-        $data['total_filtrado']=$dataProvider->totalCount;
+        $data['total_filtrado']=$total_count;
         $data['monto_acreditado']=(isset($monto_acreditado))?$monto_acreditado:0;
         $data['monto_baja']=(isset($monto_baja))?$monto_baja:0;
         $data['monto_sin_acreditar']=(isset($monto_sin_acreditar))?$monto_sin_acreditar:0;
         $data['recurso_acreditado_cantidad']=(isset($recurso_acreditado_cantidad))?$recurso_acreditado_cantidad:0;
         $data['recurso_baja_cantidad']=(isset($recurso_baja_cantidad))?$recurso_baja_cantidad:0;
         $data['resultado']=$coleccion_recurso;
-        
+
         return $data;
     }
     
