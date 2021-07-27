@@ -159,7 +159,7 @@ class RecursoSearch extends Recurso
      * Se suman todos los montos de las cuotas de prestaciones dada de baja
      *
      * @param [array] $params
-     * @return void
+     * @return double
      */
     public function sumarCuotasDePrestacionBaja($params){
         $query = new Query();

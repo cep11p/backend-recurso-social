@@ -168,10 +168,24 @@ class Recurso extends BaseRecurso
     }
     
     public function existePersonaEnRegistral(){
-        $response = \Yii::$app->registral->buscarPersonaPorId($this->personaid);     
-        
-        if(isset($response['estado']) && $response['estado']!=true){
+        // $response = \Yii::$app->registral->buscarPersonaPorId($this->personaid);     
+        $response = \Yii::$app->registral->viewPersona($this->personaid);     
+        #Chequeamos si la persona existe
+        if(!isset($response) || empty($response)){
             $this->addError('id', 'La persona con el id '.$this->personaid.' no existe!');
+        }
+
+        #Calle
+        if(!isset($response['lugar']['calle']) || empty($response['lugar']['calle'])){
+            $this->addError('calle', 'La persona debe tener calle');
+        }
+        #Altura
+        if(!isset($response['lugar']['altura']) || empty($response['lugar']['altura'])){
+            $this->addError('altura', 'La persona debe tener la altura de su domicilio');
+        }
+        #Localidad
+        if(!isset($response['lugar']['localidadid']) && empty($response['lugar']['localidadid'])){
+            $this->addError('localidad', 'Falta la localidad de la persona');       
         }
     }
     
@@ -364,7 +378,7 @@ class Recurso extends BaseRecurso
     /**
      * Se calcula el el monto total acreditado
      *
-     * @return array
+     * @return double
      */
     public function getMontoTotalAcreaditado(){
         $query = new Query();
