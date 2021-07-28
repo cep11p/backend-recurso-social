@@ -71,7 +71,8 @@ class Recurso extends BaseRecurso
         return ArrayHelper::merge(
             parent::behaviors(),
             [
-                # custom behaviors
+                # vinculamos el audit
+                'bedezign\yii2\audit\AuditTrailBehavior',
             ]
         );
     }
@@ -347,9 +348,6 @@ class Recurso extends BaseRecurso
             $array = $model->buscarMunicipioPorId($this->responsableEntrega->responsable_entregaid);
             $resultado = (isset($array['nombre']))?$array['nombre']:'';
         }
-//        if($this->responsableEntrega->tipo_responsableid == $this::TIPO_RESPONSABLE_COMISION_FOMENTO){
-//            
-//        }
 
         return $resultado;
     }
