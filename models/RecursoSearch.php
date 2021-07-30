@@ -93,7 +93,7 @@ class RecursoSearch extends Recurso
             $condicion = "EXTRACT( YEAR_MONTH FROM  `c`.`fecha_pago`) = EXTRACT( YEAR_MONTH FROM  '".$fecha_pago."')";
         }else{
             $fecha_pago = date('Y').'-06-01';
-            $condicion = "EXTRACT( YEAR_MONTH FROM  `c`.`fecha_pago`) <= EXTRACT( YEAR_MONTH FROM  '".$fecha_pago."')";
+            $condicion = "EXTRACT( YEAR FROM  `c`.`fecha_pago`) <= EXTRACT( YEAR FROM  '".$fecha_pago."')";
         }
         $query->andWhere($condicion);
         $command = $query->createCommand();
@@ -195,10 +195,10 @@ class RecursoSearch extends Recurso
             ]);
 
         $query->where(['recurso.id'=>$params['lista_ids']]);
+        $query->andWhere(['fecha_baja' => null]);
 
         $command = $query->createCommand();
         $rows = $command->queryAll();
-        
         
         $resultado = doubleval(($rows[0]['monto_general']=='')?0:$rows[0]['monto_general']) - $params['monto_total_acreditado'] - $this->sumarCuotasDePrestacionBaja($params);
         
