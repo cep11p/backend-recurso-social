@@ -191,18 +191,28 @@ class RecursoSearch extends Recurso
         $query = Recurso::find();
         
         $query->select([
-                'monto_general'=>'sum(recurso.monto)'
+            'id' => 'recurso.id',
+            'recurso.monto',
+            'monto_total_cuota' => '(Select sum(c.monto) from cuota c where c.recursoid = recurso.id)'
             ]);
 
         $query->where(['recurso.id'=>$params['lista_ids']]);
+        $query->andWhere(['fecha_acreditacion' => null]);
         $query->andWhere(['fecha_baja' => null]);
 
         $command = $query->createCommand();
         $rows = $command->queryAll();
+
+        $monto = 0;
+        $monto_total_cuota = 0;
+        foreach ($rows as $value) {
+            $monto += (isset($value['monto']))?$value['monto']:0 ;
+            $monto_total_cuota += (isset($value['monto_total_cuota']))?$value['monto_total_cuota']:0 ;
+        }
         
-        $resultado = doubleval(($rows[0]['monto_general']=='')?0:$rows[0]['monto_general']) - $params['monto_total_acreditado'] - $this->sumarCuotasDePrestacionBaja($params);
+        $resultado = doubleval($monto - $monto_total_cuota);
         
-        return (isset($monto_general))?0:$resultado;       
+        return $resultado;       
 
     }
     
@@ -724,10 +734,12 @@ class RecursoSearch extends Recurso
         $monto_sin_acreditar = 0;
         foreach ($rows as $value) {
             #sumamos los montos
-            $monto_acreditado = $monto_acreditado + $value['monto_acreditado'];
-            $monto_baja = $monto_baja + $value['monto_baja'];
-            $monto_sin_acreditar = $monto_sin_acreditar + $value['monto_sin_acreditar'];
+            $monto_acreditado += $value['monto_acreditado'];
+            $monto_baja += $value['monto_baja'];
+            $monto_sin_acreditar += $value['monto'];
         }
+
+        $monto_sin_acreditar = $monto_sin_acreditar - $monto_acreditado - $monto_baja;
         
         #Configuramos paginacion
         $query->limit($pagesize);
@@ -736,9 +748,6 @@ class RecursoSearch extends Recurso
         #Estructuramos el array
         $rows = $query->createCommand()->queryAll();
         $coleccion_recurso = array();
-        $monto_acreditado = 0;
-        $monto_baja = 0;
-        $monto_sin_acreditar = 0;
         foreach ($rows as $value) {
             $value['monto_acreditado'] = ($value['monto_acreditado']!=null)? doubleval($value['monto_acreditado']):0;
             $value['monto_baja_acreditado'] = ($value['monto_baja_acreditado']!=null)? doubleval($value['monto_baja_acreditado']):0;            
