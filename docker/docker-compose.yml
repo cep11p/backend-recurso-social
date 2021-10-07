@@ -4,8 +4,7 @@ services:
 
 ##### RECURSO-SOCIAL
   recurso_social:
-    build: dockerfile/php_yii_ds/.
-    image: php_yii_ds
+    image: cep11p/php_yii_ds:1.0
     volumes:
       - ../:/var/www/html
     environment:
