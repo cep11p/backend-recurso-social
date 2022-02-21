@@ -74,7 +74,7 @@ class LocalidadController extends ActiveController{
         
         $resultado = \Yii::$app->lugar->buscarLocalidad($param);
         
-        return $resultado['resultado'];
+        return $resultado;
 
     }
     
