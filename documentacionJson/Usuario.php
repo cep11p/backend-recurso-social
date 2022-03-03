@@ -52,13 +52,13 @@
 * @param arrayJson
 #Persona existente
 {
-    apellido: "Chucho"
-    cuil: "12123456782"
-    cuil_fin: "2"
-    cuil_prin: "12"
-    nombre: "pepe"
-    nro_documento: "12345678"
-    usuario:{
+    "apellido": "Chucho",
+    "cuil": "12123456782",
+    "cuil_fin": "2",
+    "cuil_prin": "12",
+    "nombre": "pepe",
+    "nro_documento": "12345678",
+    "usuario":{
         "username":"cep11p",
         "password":"carlos",
         "email":"cep11p@correo.com",

@@ -111,6 +111,17 @@ class User extends ModelsUser
 
             #Asignamos los permisos
             foreach ($params['lista_permiso'] as $value) {
+
+                #Si el rol a asignar es admin debemos comprobar que el usuario asignador sea admin
+                if (!\Yii::$app->user->can('admin') && $value['name'] === 'admin') {
+                    throw new \yii\web\HttpException(403, 'No se tienen permisos necesarios para asignar un rol admin');
+                }
+
+                $auth_item = AuthItem::find()->where(['name' => $value])->one();
+                if($auth_item === null){
+                    throw new \yii\web\HttpException(400, "El rol o permiso llamado '".$value['name']."' no existe.");
+                }
+
                 if((AuthAssignment::findOne(['item_name'=>$value['name'], 'user_id'=>strval($params['usuarioid'])])) === NULL){
                     $auth_assignment = new AuthAssignment();
                     $auth_assignment->setAttributes(['item_name'=>$value['name'],'user_id'=>strval($params['usuarioid'])]);
@@ -118,19 +129,20 @@ class User extends ModelsUser
                         throw new \yii\web\HttpException(400, json_encode($auth_assignment->errors));
                     }
                 }
-            }
-
-            #Asociamos el programa (vinculacion de programa, permiso y usuario)
-            foreach ($params['lista_permiso'] as $value) {
-                $programaHasUsuario = new ProgramaHasUsuario();
-                $programaHasUsuario->setAttributes([
-                    'userid'=>$params['usuarioid'],
-                    'programaid'=>$params['programaid'],
-                    'permiso'=>$value['name']
-                ]);
-
-                if(!$programaHasUsuario->save()){
-                    throw new \yii\web\HttpException(400, json_encode($auth_assignment->errors));
+                
+                #Asociamos el convenio (vinculacion de convenio, permiso y usuario)
+                //si el authitem es un permiso realizamos la vinculacion
+                if($auth_item->type == AuthItem::PERMISO){
+                    $programaHasUsuario = new ProgramaHasUsuario();
+                    $programaHasUsuario->setAttributes([
+                        'userid'=>$params['usuarioid'],
+                        'programaid'=>$params['programaid'],
+                        'permiso'=>$value['name']
+                    ]);
+                    
+                    if(!$programaHasUsuario->save()){
+                        throw new \yii\web\HttpException(400, json_encode($auth_assignment->errors));
+                    }
                 }
             }
             $transaction->commit();
