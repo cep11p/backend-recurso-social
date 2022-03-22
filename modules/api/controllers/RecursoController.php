@@ -230,6 +230,37 @@ class RecursoController extends ActiveController{
 
     }
     
+    /**
+     * Se realiza setea el atributo baja de la tabla aula, para indicarnos si el alumno está o no dado de baja
+     *
+     * @return void
+     */
+    public function actionBajaAlumno()
+    {
+        $resultado['message']='Se da de baja un alumno';
+        $param = Yii::$app->request->post();
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try{
+            
+            Recurso::bajaAlumno($param);            
+            
+            $resultado['success']=true;
+            $resultado['message']=$resultado['message'];
+            
+            $transaction->commit();
+            
+            return $resultado;
+           
+        }catch (\yii\web\HttpException $exc) {
+            $transaction->rollBack();
+            $mensaje = $exc->getMessage();
+            $statuCode = $exc->statusCode;
+            throw new \yii\web\HttpException($statuCode, $mensaje);
+        }
+
+    }
+
     public function actionAcreditar($id)
     {
         $resultado['message']='Se acredita la prestacion';

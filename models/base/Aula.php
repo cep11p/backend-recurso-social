@@ -11,6 +11,8 @@ use Yii;
  *
  * @property integer $recursoid
  * @property integer $alumnoid
+ * @property integer $baja
+ * @property string $motivo_baja
  *
  * @property \app\models\Recurso $recurso
  * @property string $aliasModel
@@ -35,7 +37,8 @@ abstract class Aula extends \yii\db\ActiveRecord
     {
         return [
             [['recursoid', 'alumnoid'], 'required'],
-            [['recursoid', 'alumnoid'], 'integer'],
+            [['recursoid', 'alumnoid', 'baja'], 'integer'],
+            [['motivo_baja'], 'string'],
             [['recursoid', 'alumnoid'], 'unique', 'targetAttribute' => ['recursoid', 'alumnoid']],
             [['recursoid'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Recurso::className(), 'targetAttribute' => ['recursoid' => 'id']]
         ];
@@ -49,6 +52,8 @@ abstract class Aula extends \yii\db\ActiveRecord
         return [
             'recursoid' => 'Recursoid',
             'alumnoid' => 'Alumnoid',
+            'baja' => 'Baja',
+            'motivo_baja' => 'Motivo Baja',
         ];
     }
 

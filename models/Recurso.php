@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\Help;
 use Yii;
 use \app\models\base\Recurso as BaseRecurso;
 use yii\db\Query;
@@ -96,6 +97,27 @@ class Recurso extends BaseRecurso
                 ['monto_mensual', 'compare','compareAttribute'=>'monto','operator'=>'<','message' => 'El monto mensual no debe ser mayo al monto total','type' => 'number']
             ]
         );
+    }
+
+    static function bajaAlumno($param){
+
+        $alumno = Aula::findOne(['recursoid' => $param['recursoid'], "alumnoid" => $param['alumnoid']]);
+        
+        if($param['baja'] == true){
+            
+            if(!isset($param['motivo_baja']) || empty($param['motivo_baja'])){
+                throw new HttpException("Falta el motivo de baja del alumno");
+            }
+
+            $alumno->baja = true;
+            $alumno->motivo_baja = $param["motivo_baja"];
+        }else{
+            $alumno->baja = false;
+        }
+
+        if(!$alumno->save()){
+            throw new HttpException(Help::ArrayErrorsToString($alumno->getErrors()));
+        }        
     }
     
     public function setAttributesCustom($values, $safeOnly = true) {
