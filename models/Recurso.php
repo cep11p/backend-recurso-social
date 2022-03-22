@@ -103,21 +103,27 @@ class Recurso extends BaseRecurso
 
         $alumno = Aula::findOne(['recursoid' => $param['recursoid'], "alumnoid" => $param['alumnoid']]);
         
-        if($param['baja'] == true){
+        if($param['baja'] == 1){
             
             if(!isset($param['motivo_baja']) || empty($param['motivo_baja'])){
                 throw new HttpException("Falta el motivo de baja del alumno");
             }
 
-            $alumno->baja = true;
+            $alumno->baja = 1;
             $alumno->motivo_baja = $param["motivo_baja"];
+
+            $resultado = "Alumno dado de baja";
         }else{
-            $alumno->baja = false;
+            $alumno->baja = 0;
+            $alumno->motivo_baja = "";
+            $resultado = "Alumno dado de alta";
         }
 
         if(!$alumno->save()){
-            throw new HttpException(Help::ArrayErrorsToString($alumno->getErrors()));
+            throw new HttpException(400,Help::ArrayErrorsToString($alumno->getErrors()));
         }        
+
+        return $resultado;
     }
     
     public function setAttributesCustom($values, $safeOnly = true) {

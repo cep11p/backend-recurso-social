@@ -10,6 +10,17 @@ use yii\helpers\ArrayHelper;
 
 class Help extends \yii\base\Component{
 
+    public static function ArrayErrorsToString($errors = []){
+        $oracion = '';
+        foreach ($errors as $key => $value) {
+            foreach ($value as $msj) {
+                $oracion .= (empty($oracion))?$msj:"\r\n ".$msj;
+            }
+        }
+
+        return $oracion;
+    }
+
     public static function obtenerEdad($fecha_nacimiento)
     {
 

@@ -1,21 +1,22 @@
 <?php
 
-/**** obtener lista de Personas ***
-@url ejemplo http://recurso-social.local/api/recursos
-@url ejemplo http://recurso-social.local/api/recursos?acreditacion=true&baja=true
-@url con criterio de busquedad ejemplo http://recurso-social.local/api/recursos?global_param=lopez&localidadid=2
- * global_param : busca por nombre, apellido y nro_documento
- * localidadid : busca por localidad
- * calle : busca por nombre de calle
- * programaid : busca por programa
- * tipo_recursoid : busca por tipo de recursos
- * fecha_hasta : busca por un rango de fecha sobre fecha_inicial
- * fecha_desde : busca por un rango de fecha sobre fecha_inicial
- * acreditacion = true busca los recursos que fueron acreditados
- * baja = true busca los recursos que fueron dados de baja
- * tipo_responsableid = 2 filtro por tipo de responsable
- * sort=-id este parametro ordena en id descendiente, tambien se puede usar otras variebles del modelo como por ejemplo monto
-@Method GET
+/** obtener lista de Personas
+ * 
+ * @url ejemplo http://recurso-social.local/api/recursos
+ * @url ejemplo http://recurso-social.local/api/recursos?acreditacion=true&baja=true
+ * @url con criterio de busquedad ejemplo http://recurso-social.local/api/recursos?global_param=lopez&localidadid=2
+ *  global_param : busca por nombre, apellido y nro_documento
+ *  localidadid : busca por localidad
+ *  calle : busca por nombre de calle
+ *  programaid : busca por programa
+ *  tipo_recursoid : busca por tipo de recursos
+ *  fecha_hasta : busca por un rango de fecha sobre fecha_inicial
+ *  fecha_desde : busca por un rango de fecha sobre fecha_inicial
+ *  acreditacion = true busca los recursos que fueron acreditados
+ *  baja = true busca los recursos que fueron dados de baja
+ *  tipo_responsableid = 2 filtro por tipo de responsable
+ *  sort=-id este parametro ordena en id descendiente, tambien se puede usar otras variebles del modelo como por ejemplo monto
+ * @Method GET
 
 {
     "pagesize": 20,
@@ -162,30 +163,33 @@
         {4...}
     ]
 }
+
 **/
 
-/***** Para crear una prestacion de Emprender o Recrear con sus alumnos****
-@url http://recurso-social.local/api/recursos
-@method POST
-@return array {"message":"Se guarda una prestacion","success":true,"data":{"id":39}}
-@param
-{
-    "personaid": 9,
-    "programaid": 3,
-    "tipo_recursoid": 3,
-    "prosito": "un proposito",
-    "fecha_alta": "2011-02-02",
-    "monto": 1234.4,
-    "observacion": "uuuuuuunaaaaaaaaaaaaa Observacion",
-    "alumno_lista":[
-    	{"alumnoid":1},
-    	{"alumnoid":2},
-    	{"alumnoid":4}
-    ],
-    "lugar_capacitacion":"milugar"
-}
- * 
+/**
+ *  Para crear una prestacion de Emprender o Recrear con sus alumnos
+ * @url http://recurso-social.local/api/recursos
+ * @method POST
+ * @return array {"message":"Se guarda una prestacion","success":true,"data":{"id":39}}
+ * @param
+ * {
+ *     "personaid": 9,
+ *     "programaid": 3,
+ *     "tipo_recursoid": 3,
+ *     "prosito": "un proposito",
+ *     "fecha_alta": "2011-02-02",
+ *     "monto": 1234.4,
+ *     "observacion": "uuuuuuunaaaaaaaaaaaaa Observacion",
+ *     "alumno_lista":[
+ *         {"alumnoid":1},
+ *     	{"alumnoid":2},
+ *     	{"alumnoid":4}
+ *     ],
+ *     "lugar_capacitacion":"milugar"
+ * }
+* 
  */
+
 
 
 /**
@@ -382,5 +386,24 @@
     {
         "monto":4000,
 	    "fecha_pago":"2021-04-05"
+    }
+ */
+
+/**
+ **** Realiza una acreditacion de un recurso(prestacion) ****
+ * @url http://recurso-social.local/api/recursos/baja-alumno
+ * @method PUT
+ * @param array para dar de baja un alumno
+    {
+        "recursoid" : 5,
+        "alumnoid" : 3,
+        "motivo_baja" : "Esto es un motivo de baja de alumno",
+        "baja" : true
+    }
+ * @param array para dar de alta un alumno
+    {
+        "recursoid" : 5,
+        "alumnoid" : 3,
+        "baja" : alta
     }
  */

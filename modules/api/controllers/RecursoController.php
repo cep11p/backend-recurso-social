@@ -237,16 +237,15 @@ class RecursoController extends ActiveController{
      */
     public function actionBajaAlumno()
     {
-        $resultado['message']='Se da de baja un alumno';
         $param = Yii::$app->request->post();
         $transaction = Yii::$app->db->beginTransaction();
 
         try{
             
-            Recurso::bajaAlumno($param);            
+            $msj = Recurso::bajaAlumno($param);            
             
-            $resultado['success']=true;
-            $resultado['message']=$resultado['message'];
+            $resultado['success'] = true;
+            $resultado['message'] = $msj;
             
             $transaction->commit();
             
