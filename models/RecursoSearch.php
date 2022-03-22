@@ -338,9 +338,8 @@ class RecursoSearch extends Recurso
         }else if(isset($params['fecha_alta_hasta'])){
             $query->andWhere(['between', 'fecha_alta', '1970-01-01', $params['fecha_alta_hasta']]);
         }else if(!isset($params['fecha_alta_desde']) && !isset($params['fecha_alta_hasta'])){
-
-            $params['fecha_hasta'] = date('Y-m-d');
-            $params['fecha_desde'] = date('Y-m-d',strtotime($params['fecha_hasta'].' -1 year'));
+            $params['fecha_hasta'] = date('Y-m-d',strtotime(date('Y-m-d').' +1 year'));
+            $params['fecha_desde'] = date('Y-m-d',strtotime(date('Y-m-d').' -1 year'));
             
             $query->andWhere(['between', 'fecha_alta', $params['fecha_desde'], $params['fecha_hasta']]);
         }

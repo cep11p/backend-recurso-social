@@ -151,9 +151,7 @@ class Recurso extends BaseRecurso
     
     public function validarFechaAlta(){          
         
-        if(date('Y-m-d') < $this->fecha_alta){
-            $this->addError('fecha_alta', 'La fecha de alta no puede ser mayor a la fecha de hoy '.date('d/m/Y'));
-        }
+       #Se borra la validacion de fecha_alta
     }
     
     public function validarFechaAcreditacion(){          
@@ -218,7 +216,7 @@ class Recurso extends BaseRecurso
         #Si cuota es falso, pagamos el monto total de un solo pago(sin cuotas)
         $cuota->monto = ($this->cuota==0)?$this->monto:$values['monto'];
         $cuota->recursoid = $this->id;
-        $cuota->fecha_pago = (isset($values['fecha_pago']) || !empty($values['fecha_pago']))?$values['fecha_pago']:date('Y-m-d');
+        $cuota->fecha_pago = (isset($values['fecha_acreditacion']) || !empty($values['fecha_acreditacion']))?$values['fecha_acreditacion']:date('Y-m-d');
         
         if(!$cuota->save()){
             throw new \yii\web\HttpException(400,json_encode($cuota->getErrors()));

@@ -40,7 +40,7 @@ class CuotaController extends ActiveController{
                 [
                     'allow' => true,
                     'actions' => ['index'],
-                    'roles' => ['soporte'],
+                    'roles' => ['usuario'],
                 ],
             ]
         ];
