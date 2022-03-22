@@ -406,4 +406,9 @@
         "alumnoid" : 3,
         "baja" : alta
     }
+ * @return 
+    {
+        "success": true,
+        "message": "Alumno dado de baja"
+    }
  */
