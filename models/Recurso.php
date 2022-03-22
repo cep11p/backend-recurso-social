@@ -101,6 +101,10 @@ class Recurso extends BaseRecurso
 
     static function bajaAlumno($param){
 
+        if(!isset($param) || empty($param)){
+            throw new HttpException(400,"Falta el recurso y el alumno para realizar la baja/alta");
+        }
+
         $alumno = Aula::findOne(['recursoid' => $param['recursoid'], "alumnoid" => $param['alumnoid']]);
         
         if($param['baja'] == 1){
