@@ -110,7 +110,7 @@ class Recurso extends BaseRecurso
         if($param['baja'] == 1){
             
             if(!isset($param['motivo_baja']) || empty($param['motivo_baja'])){
-                throw new HttpException("Falta el motivo de baja del alumno");
+                throw new HttpException(400,json_encode(['error' =>['Falta motivo']]));
             }
 
             $alumno->baja = 1;
