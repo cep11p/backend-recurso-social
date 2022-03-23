@@ -388,18 +388,32 @@ class Recurso extends BaseRecurso
      */
     public function getAlumnos(){
         $resultado = array();
+        $lista_alumno = array();
+        $lista_persona = array();
         $personaForm = new PersonaForm();
         $ids='';
 
+        #Pendiente agregar los atributos del aula
         foreach ($this->aulas as $value) {
             $ids .= (empty($ids))?$value->alumnoid:','.$value->alumnoid;
+            $lista_alumno[] = $value->toArray();
         }
         
         #Se van a obtener una lista de personas con la variable $ids
         if(!empty($ids)){
-            $resultado = $personaForm->buscarPersonaEnRegistral(array("ids"=>$ids));
+            $lista_persona = $personaForm->buscarPersonaEnRegistral(array("ids"=>$ids));
         }
         
+        foreach ($lista_alumno as $alumno) {
+            foreach ($lista_persona as $persona) {
+                if($persona['id'] == $alumno['alumnoid']){
+                    $persona['baja'] = $alumno['baja'];
+                    $persona['motivo'] = (isset($alumno['motivo']))?$alumno['motivo']:"";
+                    $resultado[] = $persona;
+                }
+            }
+        }
+
         return $resultado;       
     }
 
