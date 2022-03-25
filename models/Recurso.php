@@ -101,8 +101,22 @@ class Recurso extends BaseRecurso
 
     static function bajaAlumno($param){
 
-        if(!isset($param) || empty($param)){
-            throw new HttpException(400,"Falta el recurso y el alumno para realizar la baja/alta");
+        if(!isset($param['alumnoid']) || empty($param['alumnoid'])){
+            throw new HttpException(400,"Falta el alumno para realizar la baja/alta");
+        }
+
+        if(!isset($param['recursoid']) || empty($param['recursoid'])){
+            throw new HttpException(400,"Falta el recurso");
+        }
+
+        $model = Recurso::findOne(['id'=>$param['recursoid']]);            
+        if($model==NULL){
+            throw new \yii\web\HttpException(400, 'El recurso con el id '.$param['recursoid'].' no existe!');
+        }
+
+        #Chequeamos el permiso
+        if (!\Yii::$app->user->can('prestacion_crear', ['prestacion' => ['programaid'=>$model->programaid]])) {
+            throw new \yii\web\HttpException(403, 'No se tienen permisos necesarios para ejecutar esta acción');
         }
 
         $alumno = Aula::findOne(['recursoid' => $param['recursoid'], "alumnoid" => $param['alumnoid']]);

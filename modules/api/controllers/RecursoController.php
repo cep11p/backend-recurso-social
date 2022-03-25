@@ -240,12 +240,6 @@ class RecursoController extends ActiveController{
         $param = Yii::$app->request->post();
         $transaction = Yii::$app->db->beginTransaction();
 
-        #Chequeamos el permiso
-        if (!\Yii::$app->user->can('prestacion_crear', ['prestacion' => ['programaid'=>$param['programaid']]])) {
-            throw new \yii\web\HttpException(403, 'No se tienen permisos necesarios para ejecutar esta acción');
-        }
-
-
         try{
             
             $msj = Recurso::bajaAlumno($param);            
