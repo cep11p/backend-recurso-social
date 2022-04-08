@@ -184,14 +184,8 @@ class Recurso extends BaseRecurso
 
 
     public function validarFechaBaja(){          
-        
         if(date('Y-m-d') < $this->fecha_baja){
             $this->addError('fecha_baja', 'La fecha de baja no puede ser mayor a la fecha de hoy '.date('d/m/Y'));
-        }
-        
-        if($this->fecha_alta > $this->fecha_baja){
-            $fechaAMostrar = \DateTime::createFromFormat("Y-m-d", $this->fecha_alta);
-            $this->addError('fecha_baja', 'La fecha de baja no puede ser menor a la fecha de alta '.$fechaAMostrar->format('d/m/Y'));
         }
     }
     
