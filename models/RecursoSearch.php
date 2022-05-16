@@ -678,8 +678,8 @@ class RecursoSearch extends Recurso
         
         $query->select([
             'personaid',
-            'count(monto) as recurso_cantidad',
             'sum(monto) as monto',
+            '(SELECT count(id) AS `recurso_cantidad` FROM `recurso` WHERE (`fecha_baja` IS NULL) and personaid=r1.personaid and programaid in ('.$programa_ids.')) as recurso_cantidad',
             '(SELECT sum(c2.monto) FROM `cuota` as c2 LEFT JOIN recurso r2 on c2.recursoid = r2.id WHERE r1.personaid=r2.personaid and r2.programaid in ('.$programa_ids.')) as monto_acreditado',
             '(SELECT sum(monto) FROM `recurso` WHERE (NOT (`fecha_baja` IS NULL)) and personaid=r1.personaid and programaid in ('.$programa_ids.')) as monto_baja',
             '(SELECT sum(c2.monto) FROM `cuota` as c2 LEFT JOIN recurso r2 on c2.recursoid = r2.id WHERE (NOT (`fecha_baja` IS NULL)) and r1.personaid=r2.personaid and programaid in ('.$programa_ids.')) as monto_baja_acreditado',
