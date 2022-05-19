@@ -10,6 +10,16 @@ use yii\helpers\ArrayHelper;
 
 class Help extends \yii\base\Component{
 
+    public static function getArrayIds($needles){
+        $resultado = [];
+        foreach ($needles as $nest) {
+            $resultado[] = $nest['id'];
+        }
+
+        return $resultado;
+    }
+
+
     public static function ArrayErrorsToString($errors = []){
         $oracion = '';
         foreach ($errors as $key => $value) {

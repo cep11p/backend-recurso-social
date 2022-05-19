@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\Help;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Recurso;
@@ -189,16 +190,16 @@ class RecursoSearch extends Recurso
      */
     public function sumarMontoSinAcreditar($params = array()){
         $query = Recurso::find();
-        
+
         $query->select([
             'id' => 'recurso.id',
             'recurso.monto',
             'monto_total_cuota' => '(Select sum(c.monto) from cuota c where c.recursoid = recurso.id)'
             ]);
 
-        $query->where(['recurso.id'=>$params['lista_ids']]);
-        $query->andWhere(['fecha_acreditacion' => null]);
-        $query->andWhere(['fecha_baja' => null]);
+            $query->where(['fecha_baja' => null]);
+            $query->andWhere(['fecha_acreditacion' => null]);
+            $query->where(['recurso.id'=>$params['lista_ids']]);
 
         $command = $query->createCommand();
         $rows = $command->queryAll();
@@ -449,9 +450,9 @@ class RecursoSearch extends Recurso
         $lista_ids = [];
         foreach ($dataProvider->getModels() as $value) {
             $coleccion_recurso[] = $value->toArray();
-            $lista_ids[] = $value['id'];
         }
-
+        $lista_ids = $query->select('id')->createCommand()->queryAll();
+        $lista_ids = Help::getArrayIds($lista_ids);
         /*******  Calculamos datos de la lista (general) *******/
         
         #Monto mensual Acreditado
