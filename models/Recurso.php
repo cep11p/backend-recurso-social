@@ -159,6 +159,21 @@ class Recurso extends BaseRecurso
             $this->lugar_capacitacion = (isset($values['lugar_capacitacion']) && !empty($values['lugar_capacitacion']))?$values['lugar_capacitacion']:""; 
         }
 
+        #Validamos que hayan taller caducados(Programa Emprender). Un tallerista puede tener un taller cada 4 meses
+        if(isset($this->programaid) && ($this->programa->id == Programa::EMPRENDER)){
+            $taller = Recurso::findByCondition([
+                'personaid' => $this->personaid, 
+                'programaid' => $this->programaid])
+                ->andWhere(['fecha_baja' => null])
+                ->andWhere(['<', 'fecha_alta', $this->fecha_alta])
+                ->andWhere(['>', 'fecha_final', $this->fecha_alta])
+                ->asArray()->all();
+            if($taller != null){
+                $this->addError('error','El beneficiario ya tiene un taller vigente.');
+                throw new HttpException(400,json_encode($this->errors));
+            }
+        }
+        
         #si cuota = False
         if($this->cuota==0){
             $this->monto_mensual=0;
