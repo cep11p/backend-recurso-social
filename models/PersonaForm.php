@@ -73,7 +73,7 @@ class PersonaForm extends Model
      * @param bool $safeOnly
      * @throws Exception
      */
-    public function setAttributes($param) {
+    public function setAttributes($param, $safeOnly = true){
         /*** Persona ***/
         parent::setAttributes($param);
         
@@ -128,6 +128,7 @@ class PersonaForm extends Model
     
     public function setAttributesAndSave($param = array()) {
         
+        $arrayErrors = array();
         
         ####### Instanciamos atributos de PersonaForm #########
         $this->setAttributes($param);
